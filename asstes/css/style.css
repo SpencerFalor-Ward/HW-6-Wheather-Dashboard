@@ -1,54 +1,54 @@
-body{
-    background-image:url(../images/weather.png)
+body {
+  background-image: url(../images/weather.png);
 }
-.container{
-    display:flex;
-    flex-direction: row;
-    justify-content:space-evenly, flex-start;
-
+form {
+  display: flex;
+  flex-direction: row;
+}
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly, flex-start;
 }
 
 h1 {
-    font-family: "Bungee Shade";
-    flex: auto;
-    text-align: center;
-    max-height: fit-content;
-  }
+  font-family: "Bungee Shade";
+  flex: auto;
+  text-align: center;
+  max-height: fit-content;
+}
 
-  .search{
-      background-color: lavender;
-      margin: 5%;
-      padding:2%;
-      width: fit-content;
-      border: 1px rgb(8, 11, 44) groove;
-    
-  }
-  
-  .searchBox {
-      display: flex;
-    }
-    
-    .btn-outline-primary{
-        margin-left:1%;
-    }
-    .results{
-        display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
-    }
-                .info{
-                    background-color: rgb(242, 247, 248);
-                    margin: 5%;
-                    padding:2%;
-                    width: fit-content;
-                    border: 1px rgb(8, 11, 44) groove;
-                  
-                }
-                .forecast{
-                    background-color: rgb(242, 247, 248);
-                    margin: 5%;
-                    padding:2%;
-                    width: fit-content;
-                    border: 1px rgb(8, 11, 44) groove;
-                  
-                }
+.search {
+  background-color: lavender;
+  margin: 5%;
+  padding: 2%;
+  width: fit-content;
+  border: 1px rgb(8, 11, 44) groove;
+}
+
+.searchBox {
+  display: flex;
+}
+
+.btn-outline-primary {
+  margin-left: 1%;
+}
+.results {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+.info {
+  background-color: rgb(242, 247, 248);
+  margin: 5%;
+  padding: 2%;
+  width: fit-content;
+  border: 1px rgb(8, 11, 44) groove;
+}
+.forecast {
+  background-color: rgb(242, 247, 248);
+  margin: 5%;
+  padding: 2%;
+  width: fit-content;
+  border: 1px rgb(8, 11, 44) groove;
+}

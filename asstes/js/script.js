@@ -1,72 +1,130 @@
-var info = $(".info");
-var forecast = $(".forecast");
-var uv = $(".uv");
-
-function weatherQueryURL() {
-  var apiKey = "df830f96f75d2076c720c75bf9a8d1a4";
-  // Grab text the user typed into the search input, add to the queryParams object
-  var q = $(".city")
-    .val()
-    .trim();
-  var weatherURL = `https://api.openweathermap.org/data/2.5/weather?q=${q}&APPID=${apiKey}&units=metric`;
-  console.log(q);
-
-  // Logging the URL so we have access to it for troubleshooting
-  console.log(weatherURL);
-  console.log(weatherURL + q);
-}
-
-weatherQueryURL();
 // Function to empty out the results search
 function clear() {
   $(".results").empty();
 }
 
-// .on("click") function associated with the Search Button
-$(".btn").click(function(event) {
-  // This line allows us to take advantage of the HTML "submit" property
-  // This way we can hit enter on the keyboard and it registers the search
-  // (in addition to clicks). Prevents the page from reloading on form submit.
-  event.preventDefault();
-  // var m = moment (); = date and time now
+function dateTime() {
+  var q = $(".city")
+    .val()
+    .trim();
+  var info = $(".info");
   var m = moment();
   var mDateTime = m.format("LLL");
+  info.prepend(`<p>${q} ${mDateTime} ${iconIMG}</p>`);
+  console.log(mDateTime);
+}
 
-  // Empty the region associated with the articles
-  // clear();
-
-  // Build the query URL for the ajax request to the API
+function weatherInfo() {
   var apiKey = "df830f96f75d2076c720c75bf9a8d1a4";
   var q = $(".city")
     .val()
     .trim();
-  var weatherURL = `https://api.openweathermap.org/data/2.5/weather?q=${q}&APPID=${apiKey}&units=imperial`;
-  // var queryURL = weatherQueryURL();
-  var queryURL = weatherURL;
-
-  // Make the AJAX request to the API - GETs the JSON data at the queryURL.
-
+  var weatherURL = `https://api.openweathermap.org/data/2.5/weather?q=${q}&APPID=${apiKey}&units=metric`;
   $.ajax({
-    url: queryURL,
+    url: weatherURL,
     method: "GET"
   }).then(function(results) {
+    var info = $(".info");
     var wR = results.main;
-    // var br = $("<br>");
-    // var cDTI = info.prepend(`<p>${q} ${mDateTime} ${results.weather.icon}</p>`); ???? Why doesnt this work
     var weatherInfo = info.html(
       `Temperature: ${wR.temp}°F <br> Humidity: ${wR.humidity}% <br> Wind Speed:${results.wind.speed}MPH`
     );
     console.log(weatherInfo);
     console.log(results);
-    // console.log(cDTI);
-    var uvURL = `http://api.openweathermap.org/data/2.5/uvi?APPID=${apiKey}&lat=${results.coord.lat}&lon=${results.coord.lon}`;
-    $.ajax({
-      url: uvURL,
-      method: "GET"
-    }).then(function(results) {
-      var uvInfo = uv.text(`UV Index: ${results.value}`);
-      console.log(results);
-      console.log(uvInfo);
-    });
   });
+}
+function uvURL() {
+  var apiKey = "df830f96f75d2076c720c75bf9a8d1a4";
+  var q = $(".city")
+    .val()
+    .trim();
+  var weatherURL = `https://api.openweathermap.org/data/2.5/weather?q=${q}&APPID=${apiKey}&units=metric`;
+  $.ajax({
+    url: weatherURL,
+    method: "GET"
+  }).then(function(results) {
+    var res = results;
+    var uvURL = `http://api.openweathermap.org/data/2.5/uvi?APPID=${apiKey}&lat=${res.coord.lat}&lon=${res.coord.lon}`;
+    console.log(uvURL);
+  });
+}
+
+function uvIndex() {
+  $.ajax({
+    url: uvURL,
+    method: "GET"
+  }).then(function(results) {
+    var uv = $(".uv");
+    var uvInfo = uv.text(`UV Index: ${results.value}`);
+    console.log(results);
+    console.log(uvInfo);
+  });
+}
+
+// function forecastURL() {
+//   var forecastURL = `https://api.openweathermap.org/data/2.5/forecast?q=${q}&APPID=${apiKey}&units=imperial`;
+//   console.log(forecastURL);
+// }
+
+// //need to make card for 5 day to append below too
+function forecastInfo() {
+  var apiKey = "df830f96f75d2076c720c75bf9a8d1a4";
+  var q = $(".city")
+    .val()
+    .trim();
+  var forecastURL = `https://api.openweathermap.org/data/2.5/forecast?q=${q}&APPID=${apiKey}&units=imperial`;
+  $.ajax({
+    url: forecastURL,
+    method: "GET"
+  }).then(function(results) {
+    var forecast = $(".forecast");
+    var forecastInfo = forecast.append(results.list.main.temp);
+    console.log(results);
+    console.log(forecastInfo);
+  });
+}
+
+function iconIMG() {
+  var apiKey = "df830f96f75d2076c720c75bf9a8d1a4";
+  var q = $(".city")
+    .val()
+    .trim();
+  var weatherURL = `https://api.openweathermap.org/data/2.5/weather?q=${q}&APPID=${apiKey}&units=metric`;
+  $.ajax({
+    url: weatherURL,
+    method: "GET"
+  }).then(function(results) {
+    var forecast = $(".forecast");
+    var iconURL = `http://api.openweathermap.org/img/W/${results.weather[0].icon}.png`;
+    forecast.append(iconURL);
+    console.log(iconURL);
+  });
+}
+
+// btn.click(function(event) {
+//   // Prevents the page from reloading on form submit.
+//   event.preventDefault();
+//   clear();
+//   // dateTime();
+//   // weatherURL();
+//   weatherInfo();
+//   // uvURL();
+//   // uvIndex();
+//   // forecastURL();
+//   // forecastInfo();
+//   // iconIMG();
+// });
+$(".form").submit(function(event) {
+  event.preventDefault();
+  clear();
+  iconIMG();
+  dateTime();
+  weatherInfo();
+  // weatherURL();
+  uvURL();
+  uvIndex();
+  // forecastURL();
+  forecastInfo();
+  console.log(this);
 });
+//make more variables to have functions call and make more self contained functions and then call them where needed. Much cleaner.
