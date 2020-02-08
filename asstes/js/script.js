@@ -43,13 +43,12 @@ function uvURL() {
     url: weatherURL,
     method: "GET"
   }).then(function(results) {
-    var res = results;
-    var uvURL = `http://api.openweathermap.org/data/2.5/uvi?APPID=${apiKey}&lat=${res.coord.lat}&lon=${res.coord.lon}`;
-    console.log(uvURL);
+    var uvURL = `http://api.openweathermap.org/data/2.5/uvi?APPID=${apiKey}&lat=${results.coord.lat}&lon=${results.coord.lon}`;
+    uvIndex(uvURL);
   });
 }
 
-function uvIndex() {
+function uvIndex(uvURL) {
   $.ajax({
     url: uvURL,
     method: "GET"
@@ -78,7 +77,7 @@ function forecastInfo() {
     method: "GET"
   }).then(function(results) {
     var forecast = $(".forecast");
-    var forecastInfo = forecast.append(results.list.main.temp);
+    var forecastInfo = forecast.append(results.list.weather);
     console.log(results);
     console.log(forecastInfo);
   });
