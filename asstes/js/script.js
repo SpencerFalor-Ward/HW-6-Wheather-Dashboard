@@ -1,16 +1,18 @@
 // Function to empty out the results search
 function clear() {
-  $(".results").empty();
+  $(".info").empty();
+  $(".uv").empty();
+  $(".forecast").empty();
 }
 
 function dateTime() {
   var q = $(".city")
     .val()
     .trim();
-  var info = $(".info");
+  // var info = $(".info");
   var m = moment();
   var mDateTime = m.format("LLL");
-  info.prepend(`<p>${q} ${mDateTime} ${iconIMG}</p>`);
+  $(".info").prepend(`<p>${q} ${mDateTime} ${iconIMG}</p>`);
   console.log(mDateTime);
 }
 
@@ -26,14 +28,15 @@ function weatherInfo() {
   }).then(function(results) {
     var info = $(".info");
     var wR = results.main;
-    var weatherInfo = info.html(
+    var weatherInfo = info.prepend(
       `Temperature: ${wR.temp}°F <br> Humidity: ${wR.humidity}% <br> Wind Speed:${results.wind.speed}MPH`
     );
     console.log(weatherInfo);
     console.log(results);
   });
 }
-function uvURL() {
+
+function uvIndex() {
   var apiKey = "df830f96f75d2076c720c75bf9a8d1a4";
   var q = $(".city")
     .val()
@@ -44,21 +47,29 @@ function uvURL() {
     method: "GET"
   }).then(function(results) {
     var uvURL = `http://api.openweathermap.org/data/2.5/uvi?APPID=${apiKey}&lat=${results.coord.lat}&lon=${results.coord.lon}`;
-    uvIndex(uvURL);
+    $.ajax({
+      url: uvURL,
+      method: "GET"
+    }).then(function(results) {
+      var uv = $(".uv");
+      var uvInfo = uv.text(`UV Index: ${results.value}`);
+      console.log(results);
+      console.log(uvInfo);
+    });
   });
 }
 
-function uvIndex(uvURL) {
-  $.ajax({
-    url: uvURL,
-    method: "GET"
-  }).then(function(results) {
-    var uv = $(".uv");
-    var uvInfo = uv.text(`UV Index: ${results.value}`);
-    console.log(results);
-    console.log(uvInfo);
-  });
-}
+// function uvIndex(uvURL) {
+//   $.ajax({
+//     url: uvURL,
+//     method: "GET"
+//   }).then(function(results) {
+//     var uv = $(".uv");
+//     var uvInfo = uv.text(`UV Index: ${results.value}`);
+//     console.log(results);
+//     console.log(uvInfo);
+//   });
+// }
 
 // function forecastURL() {
 //   var forecastURL = `https://api.openweathermap.org/data/2.5/forecast?q=${q}&APPID=${apiKey}&units=imperial`;
@@ -95,7 +106,7 @@ function iconIMG() {
   }).then(function(results) {
     var forecast = $(".forecast");
     var iconURL = `http://api.openweathermap.org/img/W/${results.weather[0].icon}.png`;
-    forecast.append(iconURL);
+    forecast.append(`<img src=${iconURL}>`);
     console.log(iconURL);
   });
 }
@@ -115,12 +126,12 @@ function iconIMG() {
 // });
 $(".form").submit(function(event) {
   event.preventDefault();
-  clear();
+  // clear();
   iconIMG();
   dateTime();
   weatherInfo();
   // weatherURL();
-  uvURL();
+  // uvURL();
   uvIndex();
   // forecastURL();
   forecastInfo();
