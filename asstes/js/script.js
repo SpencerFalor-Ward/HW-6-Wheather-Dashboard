@@ -12,7 +12,7 @@ function dateTime() {
   // var info = $(".info");
   var m = moment();
   var mDateTime = m.format("LLL");
-  $(".info").prepend(`<p>${q} ${mDateTime} ${iconIMG}</p>`);
+  $(".info").prepend(`<p>${q} ${mDateTime}</p>`);
   console.log(mDateTime);
 }
 
@@ -28,7 +28,7 @@ function weatherInfo() {
   }).then(function(results) {
     var info = $(".info");
     var wR = results.main;
-    var weatherInfo = info.prepend(
+    var weatherInfo = info.append(
       `Temperature: ${wR.temp}°F <br> Humidity: ${wR.humidity}% <br> Wind Speed:${results.wind.speed}MPH`
     );
     console.log(weatherInfo);
@@ -105,9 +105,11 @@ function iconIMG() {
     method: "GET"
   }).then(function(results) {
     var forecast = $(".forecast");
-    var iconURL = `http://api.openweathermap.org/img/W/${results.weather[0].icon}.png`;
+    var iconURL = `http://api.openweathermap.org/img/w/${results.weather[0].icon}.png`;
     forecast.append(`<img src=${iconURL}>`);
     console.log(iconURL);
+    console.log(results);
+    // console.log(`new results ${results}`);
   });
 }
 
@@ -126,7 +128,7 @@ function iconIMG() {
 // });
 $(".form").submit(function(event) {
   event.preventDefault();
-  // clear();
+  clear();
   iconIMG();
   dateTime();
   weatherInfo();
