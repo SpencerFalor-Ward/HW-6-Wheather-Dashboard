@@ -9,10 +9,9 @@ function dateTime() {
   var q = $(".city")
     .val()
     .trim();
-  // var info = $(".info");
   var m = moment();
   var mDateTime = m.format("LLL");
-  $(".info").prepend(`<p>${q} ${mDateTime}</p>`);
+  $(".info").prepend(`<p>${q} <br> ${mDateTime}</p>`);
   console.log(mDateTime);
 }
 
@@ -55,9 +54,27 @@ function uvIndex() {
       method: "GET"
     }).then(function(results) {
       var uv = $(".uv");
-      var uvInfo = uv.text(`UV Index: ${results.value}`);
-      // if (results.value < 2) {
-      // }
+      var uvTxt = $("<div class='uvTxt'>");
+      var uvNum = $("<div class='uvNum'>");
+      var rV = results.value;
+      var uvInfo = uvNum.text(`${rV}`);
+      uv.append(uvTxt, uvNum);
+      uvTxt.text("UV Index:");
+      uvNum.text(uvInfo);
+
+      if (rV <= 2) {
+        `${uvInfo} Burn in 60 min`;
+        uvNum.css(background - color, "green");
+      } else if (rV == 3 || rV == 4 || rV == 5) {
+        `${uvInfo} Burn in 45 min`;
+        uvNum.css(background - color, "orange");
+      } else if (rV == 6 || rV == 7) {
+        `${uvInfo} Burn in 30 min`;
+        uvNum.css(background - color, "crimson");
+      } else if (rV >= 8) {
+        `${uvInfo} Burn in 15 min`;
+        uvNum.css(background - color, "red");
+      }
       console.log(results);
       console.log(uvInfo);
     });
@@ -70,9 +87,9 @@ function forecastInfo() {
   var q = $(".city")
     .val()
     .trim();
-  var numDays = 5;
-  // var forecastURL = `https://api.openweathermap.org/data/2.5/forecast?q=${q}&APPID=${apiKey}`;
-  var forecastURL = `https://api.openweathermap.org/data/2.5/forecast/daily?q=${q}&cnt=${numDays}&APPID=${apiKey}&units=imperial `;
+  // var numDays = 5;
+  var forecastURL = `https://api.openweathermap.org/data/2.5/forecast?q=${q}&APPID=${apiKey}`;
+  // var forecastURL = `https://api.openweathermap.org/data/2.5/forecast/daily?q=${q}&cnt=${numDays}&APPID=${apiKey}&units=imperial`;
   $.ajax({
     url: forecastURL,
     method: "GET"
@@ -99,38 +116,67 @@ function forecastInfo() {
     console.log(forecastInfo);
   });
 }
-//make list is an array and you need to for 5 it and if you use weather also need to indentify where in its array you are calling
-// function iconIMG() {
-//   var apiKey = "df830f96f75d2076c720c75bf9a8d1a4";
-//   var q = $(".city")
-//     .val()
-//     .trim();
-//   var weatherURL = `https://api.openweathermap.org/data/2.5/weather?q=${q}&APPID=${apiKey}&units=metric`;
-//   $.ajax({
-//     url: weatherURL,
-//     method: "GET"
-//   }).then(function(results) {
-//     // var forecast = $(".forecast");
-//     var info = $(".info");
-//     var iconURL = `http://api.openweathermap.org/img/w/${results.weather[0].icon}.png`;
-//     info.append(`<img src=${iconURL}>`);
-//     console.log(iconURL);
-//     console.log(results);
-//     // console.log(`new results ${results}`);
-//   });
-// }
+function forecastCSS() {
+  $(`id`).each(function() {
+    $("id").css("margin", "2%");
+    // id.style.marginRight = "1%";
+  });
+}
+function storeCity(city) {
+  var city = $(".city");
+  var searched = JSON.parse(localStorage.getItem(city));
+  var inputTxt = $("input")
+    .val()
+    .trim();
+
+  if (searched) {
+    searched.push(inputTxt);
+  } else {
+    searched = [inputTxt];
+  }
+  localStorage.setItem(city, JSON.stringify(searched));
+}
+
+function populateHistory() {
+  $(".search").empty();
+  var searchedArray = [];
+  for (var i = 0; i < searchedArray.length; i++) {
+    var searched = JSON.parse(localStorage.getItem(`${searchedArray[i]}`));
+    if (searched) {
+      searched.forEeach(searched => {
+        var history = $("<div id=past>").text(searched);
+        $(`${searchedArray[i]}`).append(history);
+      });
+    }
+  }
+}
 
 $(".form").submit(function(event) {
   event.preventDefault();
   clear();
+  storeCity();
+  populateHistory();
   dateTime();
   weatherInfo();
   uvIndex();
   forecastInfo();
-  // iconIMG();
-  // weatherURL();
-  // uvURL();
-  // forecastURL();
+  forecastCSS();
+
   console.log(this);
 });
-//make more variables to have functions call and make more self contained functions and then call them where needed. Much cleaner.
+function historyClick() {
+  $("#past").click(function() {
+    var q = $(".city")
+      .val()
+      .trim();
+    var pastCity = q.replaceWith($("#past").text());
+    event.preventDefault();
+    clear();
+    dateTime(pastCity);
+    weatherInfo(pastCity);
+    uvIndex(pastCity);
+    forecastInfo(pastCity);
+    forecastCSS();
+  });
+  console.log(this);
+}
