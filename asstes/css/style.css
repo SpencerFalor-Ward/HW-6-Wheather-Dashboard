@@ -59,3 +59,8 @@ h1 {
   width: max-content;
   border: 1px rgb(8, 11, 44) groove;
 }
+
+.forecast-item {
+  margin: 1%;
+  padding: 1%;
+}

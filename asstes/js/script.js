@@ -1,7 +1,8 @@
 // Function to empty out the results search
 function clear() {
-  $(".info").empty();
+  $(".temp").empty();
   $(".uv").empty();
+  $(".wind").empty();
   $(".forecast").empty();
 }
 
@@ -27,7 +28,7 @@ function weatherInfo() {
   }).then(function(results) {
     var iconURL = `http://api.openweathermap.org/img/w/${results.weather[0].icon}.png`;
     // info.append(`<img src=${ iconURL }>`);
-    var info = $(".info");
+    var info = $(".temp");
     var wR = results.main;
     var weatherInfo = info.append(
       `<img src=${iconURL}> <br>
@@ -60,20 +61,20 @@ function uvIndex() {
       var uvInfo = uvNum.text(`${rV}`);
       uv.append(uvTxt, uvNum);
       uvTxt.text("UV Index:");
-      uvNum.text(uvInfo);
+      //uvNum.text(uvInfo);
 
       if (rV <= 2) {
         `${uvInfo} Burn in 60 min`;
-        uvNum.css(background - color, "green");
-      } else if (rV == 3 || rV == 4 || rV == 5) {
+        uvNum.css("backgroundColor", "green");
+      } else if (rV > 2 || rV <= 5) {
         `${uvInfo} Burn in 45 min`;
-        uvNum.css(background - color, "orange");
+        uvNum.css("backgroundColor", "orange");
       } else if (rV == 6 || rV == 7) {
         `${uvInfo} Burn in 30 min`;
-        uvNum.css(background - color, "crimson");
+        uvNum.css("backgroundColor", "crimson");
       } else if (rV >= 8) {
         `${uvInfo} Burn in 15 min`;
-        uvNum.css(background - color, "red");
+        uvNum.css("backgroundColor", "red");
       }
       console.log(results);
       console.log(uvInfo);
@@ -103,7 +104,7 @@ function forecastInfo() {
       var forecastId = results.list[i].weather[0].description;
       var forecastTemp = results.list[i].main.temp;
       var forecastHumidity = results.list[i].main.humidity;
-      forecast.append(`<div id=${[i]}>`);
+      forecast.append(`<div id=${[i]} class="forecast-item">`);
       $(`#${[i]}`).append(
         `${forecastDate} <br>
         <img src=${forecastIconURL}> <br>
@@ -124,7 +125,7 @@ function forecastCSS() {
 }
 function storeCity(city) {
   var city = $(".city");
-  var searched = JSON.parse(localStorage.getItem(city));
+  var searched = JSON.parse(localStorage.getItem("cities"));
   var inputTxt = $("input")
     .val()
     .trim();
@@ -134,21 +135,20 @@ function storeCity(city) {
   } else {
     searched = [inputTxt];
   }
-  localStorage.setItem(city, JSON.stringify(searched));
+  localStorage.setItem("cities", JSON.stringify(searched));
+
+  console.log("Local Storage");
 }
 
 function populateHistory() {
-  $(".search").empty();
-  var searchedArray = [];
-  for (var i = 0; i < searchedArray.length; i++) {
-    var searched = JSON.parse(localStorage.getItem(`${searchedArray[i]}`));
-    if (searched) {
-      searched.forEeach(searched => {
-        var history = $("<div id=past>").text(searched);
-        $(`${searchedArray[i]}`).append(history);
-      });
-    }
-  }
+  var searchedArray = JSON.parse(localStorage.getItem("cities"));
+
+  searchedArray.forEach(searched => {
+    var history = $("<div class='past'>").text(searched);
+    $(".form").append(history);
+  });
+
+  historyClick();
 }
 
 $(".form").submit(function(event) {
@@ -161,22 +161,22 @@ $(".form").submit(function(event) {
   uvIndex();
   forecastInfo();
   forecastCSS();
+  $(".city").val("");
 
   console.log(this);
 });
+
 function historyClick() {
-  $("#past").click(function() {
-    var q = $(".city")
-      .val()
-      .trim();
-    var pastCity = q.replaceWith($("#past").text());
+  $(".past").click(function() {
+    var q = $(".city").val($(this).text());
     event.preventDefault();
     clear();
-    dateTime(pastCity);
-    weatherInfo(pastCity);
-    uvIndex(pastCity);
-    forecastInfo(pastCity);
+    dateTime();
+    weatherInfo();
+    uvIndex();
+    forecastInfo();
     forecastCSS();
+    $(".city").val("");
   });
   console.log(this);
 }
