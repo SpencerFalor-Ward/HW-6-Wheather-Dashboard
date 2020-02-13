@@ -61,6 +61,8 @@ h1 {
 }
 
 .forecast-item {
-  margin: 1%;
-  padding: 1%;
+  border: 1px rgb(8, 11, 44) groove;
+  margin-right: 1%;
+  /* padding: ; */
+  width: max-content;
 }

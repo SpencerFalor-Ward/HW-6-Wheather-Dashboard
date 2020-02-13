@@ -4,6 +4,7 @@ function clear() {
   $(".uv").empty();
   $(".wind").empty();
   $(".forecast").empty();
+  $(".dateTime").empty();
 }
 
 function dateTime() {
@@ -12,7 +13,7 @@ function dateTime() {
     .trim();
   var m = moment();
   var mDateTime = m.format("LLL");
-  $(".info").prepend(`<p>${q} <br> ${mDateTime}</p>`);
+  $(".dateTime").prepend(`<p>${q} <br> ${mDateTime}</p>`);
   console.log(mDateTime);
 }
 
@@ -21,7 +22,7 @@ function weatherInfo() {
   var q = $(".city")
     .val()
     .trim();
-  var weatherURL = `https://api.openweathermap.org/data/2.5/weather?q=${q}&APPID=${apiKey}&units=metric`;
+  var weatherURL = `https://api.openweathermap.org/data/2.5/weather?q=${q}&APPID=${apiKey}&units=imperial`;
   $.ajax({
     url: weatherURL,
     method: "GET"
@@ -44,7 +45,7 @@ function uvIndex() {
   var q = $(".city")
     .val()
     .trim();
-  var weatherURL = `https://api.openweathermap.org/data/2.5/weather?q=${q}&APPID=${apiKey}&units=metric`;
+  var weatherURL = `https://api.openweathermap.org/data/2.5/weather?q=${q}&APPID=${apiKey}&units=imperial`;
   $.ajax({
     url: weatherURL,
     method: "GET"
@@ -88,8 +89,8 @@ function forecastInfo() {
   var q = $(".city")
     .val()
     .trim();
-  // var numDays = 5;
-  var forecastURL = `https://api.openweathermap.org/data/2.5/forecast?q=${q}&APPID=${apiKey}`;
+  var numDays = 5;
+  var forecastURL = `https://api.openweathermap.org/data/2.5/forecast?q=${q}&APPID=${apiKey}&cnt=${numDays}&units=imperial`;
   // var forecastURL = `https://api.openweathermap.org/data/2.5/forecast/daily?q=${q}&cnt=${numDays}&APPID=${apiKey}&units=imperial`;
   $.ajax({
     url: forecastURL,
@@ -98,7 +99,7 @@ function forecastInfo() {
     for (var i = 0; i < 5; i++) {
       var forecast = $(".forecast");
       // var forecastDate = results.list[i].dt_txt;
-      var forecastDate = results.list[i].dt;
+      var forecastDate = results.list[i].dt_txt;
       // var forecastIcon = results.list[i].weather[3].icon;
       var forecastIconURL = `http://api.openweathermap.org/img/w/${results.list[i].weather[0].icon}.png`;
       var forecastId = results.list[i].weather[0].description;
@@ -141,13 +142,19 @@ function storeCity(city) {
 }
 
 function populateHistory() {
-  var searchedArray = JSON.parse(localStorage.getItem("cities"));
-
+  var searchedArray = JSON.parse(localStorage.getItem(`cities`));
   searchedArray.forEach(searched => {
-    var history = $("<div class='past'>").text(searched);
-    $(".form").append(history);
+    if ("cities".length <=5) {
+      var history = $("<div class='past'>").text(searched);
+      $(".search").append(history);
+    } else {
+      $(".past").empty();
+      var history = $("<div class='past'>").text(searched);
+      $(".search").append(history);
+      // populateHistory();
+    }
   });
-
+  // populateHistory();
   historyClick();
 }
 
