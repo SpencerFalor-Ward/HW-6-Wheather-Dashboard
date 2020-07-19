@@ -1,4 +1,4 @@
-# HW-6-Wheather-Dashboard - unfinished 2-11-20
+# Sfw-Wheather-Dashboard - unfinished as of 7-18-20
 Weather Dashboard to practice using $ajax() and API
 
 ## User statement ##
